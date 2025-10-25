@@ -1,7 +1,7 @@
 This is first line from hl
 From NMgit
 Second line from NM
-This is a project using springboot
+This is a project using springboot-2
 
 
 This is seconf line from hl
