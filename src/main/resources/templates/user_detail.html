@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Details</title>
+</head>
+<body>
+<h1>User Information</h1>
+<div th:if="${user}">
+    <p>ID: <span th:text="${user.id}"></span></p>
+    <p>Name: <span th:text="${user.name}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Token: <span th:text="${token}"></span></p>
+    <p>Token: <span th:text="${jwtUserName}"></span></p>
+</div>
+<div th:unless="${user}">
+    <p>User not found!</p>
+</div>
+</body>
+</html>
