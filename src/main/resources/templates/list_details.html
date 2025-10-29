@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .commodity-info {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .commodity-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .commodity-desc {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        .price {
+            font-size: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stock-info {
+            margin: 15px 0;
+        }
+        .stock-item {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<h1>商品详情</h1>
+
+<div class="commodity-info">
+    <div class="commodity-name" th:text="${commodities.commodityName}">商品名称</div>
+    <div class="commodity-desc" th:text="${commodities.commodityDesc}">商品描述</div>
+    <div class="price" th:text="'¥' + ${commodities.price}">价格</div>
+
+    <div class="stock-info">
+        <div class="stock-item">商品ID: <span th:text="${commodities.commodityId}">-</span></div>
+        <div class="stock-item">可用库存: <span th:text="${commodities.availableStock}">0</span></div>
+        <div class="stock-item">锁定库存: <span th:text="${commodities.lockStock}">0</span></div>
+        <div class="stock-item">总库存: <span th:text="${commodities.totalStock}">0</span></div>
+        <div class="stock-item">创建者ID: <span th:text="${commodities.creatorUserId}">-</span></div>
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <a href="/commodities">返回首页</a>
+</div>
+</body>
+</html>

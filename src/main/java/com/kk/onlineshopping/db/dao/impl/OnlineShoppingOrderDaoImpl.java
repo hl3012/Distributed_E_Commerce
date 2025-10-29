@@ -28,6 +28,11 @@ public class OnlineShoppingOrderDaoImpl implements OnlineShoppingOrderDao {
     }
 
     @Override
+    public OnlineShoppingOrder queryOrderByOrderNum(String orderNum) {
+        return mapper.selectByOrderNum(orderNum);
+    }
+
+    @Override
     public int updateOrder(OnlineShoppingOrder record) {
         return mapper.updateByPrimaryKey(record);
     }

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Commodity List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #3498db;
+      color: #fff;
+    }
+
+    tr:hover {
+      background-color: #f0f8ff;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #888;
+      margin-top: 50px;
+      font-size: 18px;
+    }
+
+    .actions a {
+      text-decoration: none;
+      color: white;
+      background-color: #2ecc71;
+      padding: 6px 10px;
+      border-radius: 4px;
+      margin: 0 4px;
+      transition: 0.3s;
+    }
+
+    .actions a.delete {
+      background-color: #e74c3c;
+    }
+
+    .actions a:hover {
+      opacity: 0.85;
+    }
+
+    .top-links {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .top-links a {
+      text-decoration: none;
+      color: #fff;
+      background-color: #3498db;
+      padding: 8px 14px;
+      border-radius: 6px;
+      margin: 0 6px;
+    }
+
+    .top-links a:hover {
+      background-color: #2980b9;
+    }
+
+  </style>
+</head>
+<body>
+<h1>Seller’s Commodities</h1>
+
+<div class="top-links">
+  <a th:href="@{/addItem}">Add New Commodity</a>
+<!--  <a th:href="@{/home}">Back to Home</a>-->
+</div>
+
+<div th:if="${#lists.isEmpty(commodities)}" class="no-data">
+  No commodities found for this seller.
+</div>
+
+<table th:if="${!#lists.isEmpty(commodities)}">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Price</th>
+    <th>Available Stock</th>
+    <th>Creator User ID</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="item : ${commodities}">
+    <td th:text="${item.commodityId}"></td>
+    <td th:text="${item.commodityName}"></td>
+    <td th:text="${item.commodityDesc}"></td>
+    <td th:text="${item.price}"></td>
+    <td th:text="${item.availableStock}"></td>
+    <td th:text="${item.creatorUserId}"></td>
+    <td class="actions">
+      <a th:href="@{'/commodities/edit/' + ${item.commodityId}}">Edit</a>
+      <a th:href="@{'/commodities/delete/' + ${item.commodityId}}" class="delete">Delete</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

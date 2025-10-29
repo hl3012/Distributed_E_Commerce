@@ -14,4 +14,5 @@ public interface OnlineShoppingCommodityDao {
     int updateCommodity(OnlineShoppingCommodity record);
 
     List<OnlineShoppingCommodity> listCommoditiesByUserId(long userId);
+    List<OnlineShoppingCommodity> listCommodities();
 }

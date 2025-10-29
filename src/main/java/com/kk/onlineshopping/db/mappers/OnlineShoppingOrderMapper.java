@@ -10,6 +10,7 @@ public interface OnlineShoppingOrderMapper {
     int insertSelective(OnlineShoppingOrder record);
 
     OnlineShoppingOrder selectByPrimaryKey(Long orderId);
+    OnlineShoppingOrder selectByOrderNum(String orderNum);
 
     int updateByPrimaryKeySelective(OnlineShoppingOrder record);
 

@@ -23,8 +23,8 @@ class OnlineShoppingCommodityDaoTest {
     @Test
     void insertCommodity_Mapper() throws JsonProcessingException {
         mapper.deleteByPrimaryKey(123L);
-        OnlineShoppingCommodity onlineShoppingCommodity = OnlineShoppingCommodity.builder().commodityId(123L).price(123).commodityDesc("desc").commodityName("name").creatorUserId(123L).availableStock(111).totalStock(123).lockStock(0).build();
-        mapper.insert(onlineShoppingCommodity);
+        OnlineShoppingCommodity onlineShoppingCommodity = OnlineShoppingCommodity.builder().price(123).commodityDesc("desc").commodityName("name").creatorUserId(123L).availableStock(111).totalStock(123).lockStock(0).build();
+        for(int i=0; i<100;i++) mapper.insert(onlineShoppingCommodity);
         log.info(objectMapper.writeValueAsString(mapper.selectByPrimaryKey(123L)));
     }
 

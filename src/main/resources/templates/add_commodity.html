@@ -1,0 +1,21 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="cart py-container" id="cart">
+  <div class="checkout py-container">
+    <li>
+      <div class="sendGoods">
+        <form th:action="@{/commodities}" method="post">
+          Product ID: <input type="text" name="commodityId"><br>
+          Product Name: <input type="text" name="commodityName"><br>
+          Product Description: <input type="text" name="commodityDesc"><br>
+          Product Price: <input type="text" name="price"><br>
+          Product Quantity: <input type="text" name="availableStock"><br>
+          Creator User ID: <input type="text" name="creatorUserId"><br>
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+    </li>
+  </div>
+</div>
+</body>
+</html>

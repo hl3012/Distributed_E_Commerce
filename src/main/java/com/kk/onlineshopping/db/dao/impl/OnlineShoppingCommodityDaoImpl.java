@@ -37,4 +37,9 @@ public class OnlineShoppingCommodityDaoImpl implements OnlineShoppingCommodityDa
     public List<OnlineShoppingCommodity> listCommoditiesByUserId(long userId) {
         return mapper.listCommoditiesByUserId(userId);
     }
+
+    @Override
+    public List<OnlineShoppingCommodity> listCommodities() {
+        return mapper.listCommodities();
+    }
 }

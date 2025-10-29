@@ -8,6 +8,7 @@ public interface OnlineShoppingOrderDao {
     int insertOrder(OnlineShoppingOrder record);
 
     OnlineShoppingOrder queryOrderById(Long orderId);
+    OnlineShoppingOrder queryOrderByOrderNum(String orderNum);
 
     int updateOrder(OnlineShoppingOrder record);
 }
