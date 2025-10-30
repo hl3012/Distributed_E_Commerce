@@ -136,4 +136,11 @@
       lock_stock = #{lockStock,jdbcType=INTEGER}
     where commodity_id = #{commodityId,jdbcType=BIGINT}
   </update>
+    <update id="deductStockWithCommodityId">
+        update online_shopping_commodity
+        set available_stock = available_stock - 1,
+            lock_stock = lock_stock +1
+        where commodity_id = #{commodityId,jdbcType=BIGINT}
+          and available_stock > 0
+    </update>
 </mapper>

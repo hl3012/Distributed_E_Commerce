@@ -15,4 +15,6 @@ public interface OnlineShoppingCommodityDao {
 
     List<OnlineShoppingCommodity> listCommoditiesByUserId(long userId);
     List<OnlineShoppingCommodity> listCommodities();
+
+    int deductStockWithCommodityId(long commodityId);
 }

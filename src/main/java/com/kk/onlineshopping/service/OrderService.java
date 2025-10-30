@@ -20,6 +20,8 @@ public class OrderService {
     OnlineShoppingCommodityDao commodityDao;
     @Resource
     OnlineShoppingOrderDao orderDao;
+    @Resource
+    private RedisService redisService;
 
     public OnlineShoppingOrder processOrder(long commodityId, long userId) {
         OnlineShoppingCommodity onlineShoppingCommodity = commodityDao.queryCommodityById(commodityId);
@@ -34,6 +36,32 @@ public class OrderService {
             onlineShoppingCommodity.setLockStock(lockStock);
             commodityDao.updateCommodity(onlineShoppingCommodity);
             return createOrder(commodityId, userId, onlineShoppingCommodity.getPrice());
+        } else {
+            log.info("Process order failed due to no available stock, commodityId:" + commodityId);
+            return null;
+        }
+    }
+
+
+    //use SQL atomic operation and avoid overselling
+    public OnlineShoppingOrder processOrderSQL(long commodityId, long userId) {
+        int res = commodityDao.deductStockWithCommodityId(commodityId);
+        if(res > 0) {
+            return createOrder(commodityId, userId, 1);
+        } else {
+            log.info("Process order failed due to no available stock, commodityId:" + commodityId);
+            return null;
+        }
+    }
+
+    //use Redis atomic operation and avoid overselling
+    public OnlineShoppingOrder processOrderRedis(long commodityId, long userId) {
+        String redisKey = "online_shopping:online_shopping_commodity:stock" + commodityId;
+        long result = redisService.deductStockWithCommodityId(redisKey);
+        if (result >= 0) {
+            log.info("Process order success for commodityId:" + commodityId + ", Current availableStock:" + result);
+            OnlineShoppingOrder order = processOrder(commodityId, userId);
+            return order;
         } else {
             log.info("Process order failed due to no available stock, commodityId:" + commodityId);
             return null;
