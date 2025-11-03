@@ -65,7 +65,7 @@ public class CommodityController {
 //        return "list_items";
 //    }
 
-    @GetMapping({"item/{commodityId}","/"})
+    @GetMapping("item/{commodityId}")
     public String getCommodity(@PathVariable("commodityId") long commodityId, Map <String, Object> resultMap) {
         OnlineShoppingCommodity onlineShoppingCommodity = onlineShoppingCommodityDao.queryCommodityById(commodityId);
         resultMap.put("commodities", onlineShoppingCommodity);

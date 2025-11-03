@@ -26,18 +26,18 @@ class OnlineShoppingOrderDaoTest {
 
     @Test
     void insertOrder_mapper() throws JsonProcessingException {
-        mapper.deleteByPrimaryKey(123L);
-        OnlineShoppingOrder order = OnlineShoppingOrder.builder().orderStatus(0).orderNo("123").orderId(123L).orderAmount(123L).commodityId(123L).createTime(new Date()).payTime(new Date()).userId(123L).orderStatus(0).build();
+        mapper.deleteByPrimaryKey(1L);
+        OnlineShoppingOrder order = OnlineShoppingOrder.builder().orderStatus(0).orderNo("123").orderId(1L).orderAmount(123L).commodityId(1000L).createTime(new Date()).payTime(new Date()).userId(123L).orderStatus(0).build();
         mapper.insert(order);
-        OnlineShoppingOrder order1 = mapper.selectByPrimaryKey(123L);
-        log.info(objectMapper.writeValueAsString(order1));
+        OnlineShoppingOrder order1 = mapper.selectByPrimaryKey(1L);
+//        log.info(objectMapper.writeValueAsString(order1));
     }
 
     @Test
     void updateOrder_DAO() throws JsonProcessingException {
-        OnlineShoppingOrder order = dao.queryOrderById(123L);
+        OnlineShoppingOrder order = dao.queryOrderById(2L);
         order.setOrderStatus(1);
         dao.updateOrder(order);
-        log.info(objectMapper.writeValueAsString(dao.queryOrderById(123L)));
+//        log.info(objectMapper.writeValueAsString(dao.queryOrderById(124L)));
     }
 }

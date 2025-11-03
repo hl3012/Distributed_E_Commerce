@@ -27,9 +27,11 @@ public class OrderController {
     public String buyCommodity(@PathVariable("userId") long userId,
                                @PathVariable("commodityId") long commodityId,
                                Map<String, Object> requestMap) {
-        OnlineShoppingOrder onlineShoppingOrder = orderService.processOrderRedis(commodityId, userId);
+//        OnlineShoppingOrder onlineShoppingOrder = orderService.processOrderDistributedLock(commodityId, userId);
 //        OnlineShoppingOrder onlineShoppingOrder = orderService.processOrderSQL(commodityId, userId);
 //        OnlineShoppingOrder onlineShoppingOrder = orderService.processOrder(commodityId, userId);
+//        OnlineShoppingOrder onlineShoppingOrder = orderService.processOrderRedis(commodityId, userId);
+        OnlineShoppingOrder onlineShoppingOrder = orderService.processOrderFinal(commodityId, userId);
 
         if (onlineShoppingOrder == null) {
             requestMap.put("resultInfo", "failed order creation");

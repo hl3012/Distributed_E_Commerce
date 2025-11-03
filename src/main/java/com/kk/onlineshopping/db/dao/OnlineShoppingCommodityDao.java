@@ -17,4 +17,5 @@ public interface OnlineShoppingCommodityDao {
     List<OnlineShoppingCommodity> listCommodities();
 
     int deductStockWithCommodityId(long commodityId);
+    int revertStockWithCommodityId(long commodityId);
 }

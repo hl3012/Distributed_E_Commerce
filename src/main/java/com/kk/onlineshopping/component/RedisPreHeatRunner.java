@@ -22,6 +22,7 @@ public class RedisPreHeatRunner implements ApplicationRunner { //start automatic
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+//        Thread.sleep(10000); // 等待10秒
         List<OnlineShoppingCommodity> onlineShoppingCommodities = onlineShoppingCommodityDao.listCommodities();
         for(OnlineShoppingCommodity onlineShoppingCommodity : onlineShoppingCommodities){
             String key = "online_shopping:online_shopping_commodity:stock" + onlineShoppingCommodity.getCommodityId();

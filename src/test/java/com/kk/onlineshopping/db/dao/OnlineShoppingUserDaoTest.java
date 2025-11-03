@@ -24,10 +24,10 @@ class OnlineShoppingUserDaoTest {
 
     @Test
     void insertUser_mapper() throws JsonProcessingException {
-        mapper.deleteByPrimaryKey(123L);
-        OnlineShoppingUser user = OnlineShoppingUser.builder().userId(123L).name("zhangsan").address("Seattle").email("zhangsan@hotmail.com").phone("111111").userType(1).build();
+        mapper.deleteByPrimaryKey(124L);
+        OnlineShoppingUser user = OnlineShoppingUser.builder().userId(124L).name("zhangsan").address("Seattle").email("zhangsan@hotmail.com").phone("111111").userType(1).build();
         mapper.insert(user);
-        log.info(objectMapper.writeValueAsString(mapper.selectByPrimaryKey(123L)));
+//        log.info(objectMapper.writeValueAsString(mapper.selectByPrimaryKey(124L)));
     }
 
     @Test
@@ -36,6 +36,6 @@ class OnlineShoppingUserDaoTest {
         onlineShoppingUser.setPhone("2222");
         onlineShoppingUser.setName("张三");
         userDao.updateUser(onlineShoppingUser);
-        log.info(objectMapper.writeValueAsString(userDao.queryUserById(123L)));
+//        log.info(objectMapper.writeValueAsString(userDao.queryUserById(123L)));
     }
 }

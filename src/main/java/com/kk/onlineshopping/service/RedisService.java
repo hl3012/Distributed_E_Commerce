@@ -28,7 +28,7 @@ public class RedisService {
         return value;
     }
 
-    public long deductStockWithCommodityId(String key) {
+    public Long deductStockWithCommodityId(String key) {
         Jedis jedis = jedisPool.getResource();
         String script =
                 "if redis.call('exists', KEYS[1]) == 1 then\n"
@@ -45,6 +45,13 @@ public class RedisService {
             jedis.close();
         }
         return stock;
+    }
+
+    public Long revertStockWithCommodityId(String key) {
+        Jedis jedis = jedisPool.getResource();
+        Long incr = jedis.incr(key);
+        jedis.close();
+        return incr;
     }
 
 //    public long stockDeduct(String key) {
@@ -82,4 +89,31 @@ public class RedisService {
         if (result == 1L) { return true; }
         return false;
     }
+
+    public void addToDenyList(String userId, String commodityId) {
+        String key = "online_shopping:denyListUserId:" + userId;
+        Jedis jedisClient = jedisPool.getResource();
+        jedisClient.sadd(key, commodityId);
+        jedisClient.close();
+        log.info("Add userId: {} into denyList for commodityId: {} ", userId, commodityId);
     }
+
+
+    public boolean isInDenyList(String userId, String commodityId) {
+        String key = "online_shopping:denyListUserId:" + userId;
+        Jedis jedisClient = jedisPool.getResource();
+        Boolean sismember = jedisClient.sismember(key, commodityId);
+        jedisClient.close();
+        return sismember;
+    }
+
+    public void removeFromDenyList(String userId, String commodityId) {
+        String key = "online_shopping:denyListUserId:" + userId;
+        Jedis jedisClient = jedisPool.getResource();
+        jedisClient.srem(key, commodityId);
+        jedisClient.close();
+        log.info("Add userId: {} into denyList for commodityId: {} ", userId, commodityId);
+    }
+}
+
+

@@ -1,7 +1,9 @@
 package com.kk.onlineshopping.service;
 
+import com.alibaba.fastjson.JSON;
 import com.kk.onlineshopping.db.po.OnlineShoppingCommodity;
 import com.kk.onlineshopping.db.po.OnlineShoppingOrder;
+import com.kk.onlineshopping.service.mq.RocketMQService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,9 @@ public class OrderService {
     OnlineShoppingOrderDao orderDao;
     @Resource
     private RedisService redisService;
+
+    @Resource
+    RocketMQService rocketMQService;
 
     public OnlineShoppingOrder processOrder(long commodityId, long userId) {
         OnlineShoppingCommodity onlineShoppingCommodity = commodityDao.queryCommodityById(commodityId);
@@ -59,11 +64,48 @@ public class OrderService {
         String redisKey = "online_shopping:online_shopping_commodity:stock" + commodityId;
         long result = redisService.deductStockWithCommodityId(redisKey);
         if (result >= 0) {
+
             log.info("Process order success for commodityId:" + commodityId + ", Current availableStock:" + result);
             OnlineShoppingOrder order = processOrder(commodityId, userId);
             return order;
         } else {
             log.info("Process order failed due to no available stock, commodityId:" + commodityId);
+            return null;
+        }
+    }
+
+    //use MQ operation and avoid peak load
+    public OnlineShoppingOrder processOrderFinal(long commodityId, long userId) {
+        if(redisService.isInDenyList(String.valueOf(userId), String.valueOf(commodityId))) {
+            log.info("Each user has only one quote for this commodity:" + commodityId);
+            return null;
+        }
+        String redisKey = "online_shopping:online_shopping_commodity:stock" + commodityId;
+        long result = redisService.deductStockWithCommodityId(redisKey);
+        if (result >= 0) {
+            OnlineShoppingOrder order = createOrder(commodityId, userId, result);
+            rocketMQService.sendFIFOMessage("createOrder", JSON.toJSONString(order));
+            log.info("Place order successfully for commodityId:" + commodityId);
+            redisService.addToDenyList(String.valueOf(userId), String.valueOf(commodityId));
+            return order;
+        } else {
+            log.info("Process order failed due to no available stock, commodityId:" + commodityId);
+            return null;
+        }
+    }
+
+    //use Redis Distributed lock atomic operation and avoid overselling
+    public OnlineShoppingOrder processOrderDistributedLock(long commodityId, long userId) {
+        String redisKey = "commodityLock" + commodityId;
+        String requestId = UUID.randomUUID().toString();
+        boolean result = redisService.tryGetDistributedLock(redisKey, requestId, 5000);
+        if (result) {
+            log.info("Process order success for commodityId:" + commodityId + ", Current availableStock:" + result);
+            OnlineShoppingOrder order = processOrder(commodityId, userId);
+            redisService.releaseDistributedLock(redisKey, requestId);
+            return order;
+        } else {
+            log.info("Process order failed due to no fetching lock, commodityId:" + commodityId);
             return null;
         }
     }
@@ -77,7 +119,7 @@ public class OrderService {
                 .createTime(new Date())
                 .orderStatus(1)
                 .build();
-        orderDao.insertOrder(order);
+//        orderDao.insertOrder(order);
         return order;
     }
 
