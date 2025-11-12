@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
-import { EcrStack } from '../lib/ecr-stack';
-import { EcsStack } from '../lib/ecs-stack';
-import { PipelineStack } from '../lib/pipeline-stack';
+import { EcrStack } from '../lib/ecr_stack';
+import { EcsStack } from '../lib/ecs_stack';
+import { PipelineStack } from '../lib/pipeline_stack';
 
 const app = new cdk.App();
 
@@ -10,7 +10,7 @@ const env = {
     region: process.env.CDK_DEFAULT_REGION || 'us-east-1'
 };
 
-const appName = 'OnlineShopping';
+const appName = 'onlineshopping';
 const stage = 'prod';
 
 

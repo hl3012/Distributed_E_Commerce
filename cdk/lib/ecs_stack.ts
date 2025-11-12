@@ -35,7 +35,7 @@ export class EcsStack extends cdk.Stack {
         });
 
         const container = taskDefinition.addContainer('SpringBootContainer', {
-            image: ecs.ContainerImage.fromEcrRepository(props.repository, 'latest'),
+            image: ecs.ContainerImage.fromEcrRepository(props.repository),
             logging: ecs.LogDriver.awsLogs({
                 streamPrefix: props.appName,
                 logRetention: logs.RetentionDays.ONE_WEEK
@@ -52,14 +52,24 @@ export class EcsStack extends cdk.Stack {
             internetFacing: true
         });
 
+
+        const serviceSecurityGroup = new ec2.SecurityGroup(this, 'ServiceSecurityGroup', {
+            vpc,
+            description: 'Security group for ECS service',
+            allowAllOutbound: true
+        });
+
+        serviceSecurityGroup.connections.allowFrom(loadBalancer, ec2.Port.tcp(8080));
+
         const listener = loadBalancer.addListener('Listener', { port: 80 });
 
         this.service = new ecs.FargateService(this, 'FargateService', {
             cluster: this.cluster,
             taskDefinition,
-            desiredCount: 2,
+            desiredCount: props.stage === 'prod' ? 2 : 1,
             assignPublicIp: true,
-            healthCheckGracePeriod: cdk.Duration.seconds(120)
+            healthCheckGracePeriod: cdk.Duration.seconds(120),
+            securityGroups: [serviceSecurityGroup]
         });
 
         listener.addTargets('EcsTargets', {
@@ -71,6 +81,21 @@ export class EcsStack extends cdk.Stack {
                 timeout: cdk.Duration.seconds(5)
             }
         });
+
+        // const httpsListener = loadBalancer.addListener('HttpsListener', {
+        //     port: 443,
+        //     // certificates:
+        // });
+        //
+        // httpsListener.addTargets('EcsTargets', {
+        //     port: 8080,
+        //     targets: [this.service],
+        //     healthCheck: {
+        //         path: '/actuator/health',
+        //         interval: cdk.Duration.seconds(30),
+        //         timeout: cdk.Duration.seconds(5)
+        //     }
+        // });
 
         new cdk.CfnOutput(this, 'LoadBalancerDns', {
             value: loadBalancer.loadBalancerDnsName

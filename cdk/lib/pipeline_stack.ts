@@ -20,26 +20,15 @@ export class PipelineStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: PipelineStackProps) {
         super(scope, id, props);
 
-        // 创建构建项目
         const buildProject = new codebuild.Project(this, 'BuildProject', {
             projectName: `${props.appName}-build`,
-            source: codebuild.Source.gitHub({
-                owner: 'your-github-username',
-                repo: 'your-springboot-repo',
-                webhook: true,
-                webhookFilters: [
-                    codebuild.FilterGroup.inEventOf(
-                        codebuild.EventAction.PUSH
-                    ).andBranchIs('main')
-                ]
-            }),
             environment: {
                 buildImage: codebuild.LinuxBuildImage.AMAZON_LINUX_2_3,
                 privileged: true,
                 environmentVariables: {
                     AWS_ACCOUNT_ID: { value: this.account },
                     IMAGE_REPO_NAME: { value: props.ecrRepository.repositoryName },
-                    IMAGE_TAG: { value: 'latest' },
+                    // IMAGE_TAG: { value: 'latest' },
                     CONTAINER_NAME: { value: 'SpringBootContainer' },
                     AWS_DEFAULT_REGION: { value: this.region }
                 }
@@ -52,6 +41,22 @@ export class PipelineStack extends cdk.Stack {
 
         props.ecrRepository.grantPullPush(buildProject);
 
+        buildProject.addToRolePolicy(new iam.PolicyStatement({
+            actions: [
+                'ecs:DescribeServices',
+                'ecs:UpdateService',
+                'ecr:GetAuthorizationToken'
+            ],
+            resources: ['*']
+        }));
+
+        buildProject.addToRolePolicy(new iam.PolicyStatement({
+            actions: [
+                'codepipeline:PutJobSuccessResult',
+                'codepipeline:PutJobFailureResult'
+            ],
+            resources: ['*']
+        }));
 
         const artifactBucket = new s3.Bucket(this, 'ArtifactBucket', {
             removalPolicy: cdk.RemovalPolicy.DESTROY,
