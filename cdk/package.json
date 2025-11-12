@@ -1,0 +1,23 @@
+{
+  "name": "springboot-ecs-infra",
+  "version": "1.0.0",
+  "bin": {
+    "springboot-ecs-infra": "bin/app.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "cdk deploy --all",
+    "destroy": "cdk destroy --all"
+  },
+  "devDependencies": {
+    "@types/node": "20.x",
+    "typescript": "^5.0.4",
+    "aws-cdk": "2.80.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.80.0",
+    "constructs": "^10.0.0"
+  }
+}
